@@ -4,7 +4,7 @@ export default {
         try {
             value = localStorage.getItem(key)
         } catch (ex) {
-            // 开发环境下提示error
+            // in developement error
             if (__DEV__) {
                 console.error('localStorage.getItem报错, ', ex.message)
             }
