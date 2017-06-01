@@ -18,13 +18,11 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <p>header</p>
                 {
                     this.state.initDone
                     ? this.props.children:
                     <div>Loading....</div>
                 }
-                <p>footer</p>
             </div>
         )
     }
@@ -32,7 +30,7 @@ class App extends React.Component {
         //get the cityName from the localstorage
         let cityName = LocalStorage.getItem(CITYNAME);
         if(cityName == null){
-            cityName = 'newyork';
+            cityName = 'New York';
         }
         this.props.userInfoActions.update({
             cityName: cityName
