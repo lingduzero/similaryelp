@@ -1,5 +1,14 @@
 import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { hashHistory } from 'react-router'
+import * as userInfoActionsFromOtherFile from '../../actions/userinfo.js'
+import Header from '../../components/Header'
+import CurrentCity from '../../components/CurrentCity'
+import CityList from '../../components/CityList'
+import LocalStorage from '../../util/LocalStore.js'
+import {CITYNAME} from '../../config/localStoreKey.js'
 
 
 class City extends React.Component {
@@ -10,12 +19,49 @@ class City extends React.Component {
     render() {
         return (
             <div>
-                <h1>city</h1>
+              <Header title = "select the city"/>
+              <CurrentCity cityName = {this.props.userinfo.cityName} />
+              <CityList changeFn = {this.changeCity.bind(this)}/>
             </div>
         )
     }
+
+    changeCity(newCity){
+        if(newCity == null){
+            return
+        }
+
+        //change redux
+        const userinfo = this.props.userinfo;
+        userinfo.cityName = newCity;
+        this.props.userInfoActions.update(userinfo);
+
+        //change localstorage
+         LocalStorage.setItem(CITYNAME, newCity);
+         console.log(hashHistory);
+         hashHistory.push('/');
+
+    }
 }
 
-// 使用 require.ensure 异步加载，还不支持 ES6 的 export 
-// export default City
-module.exports = City
+function mapStateToProps(state){
+        return{
+            userinfo: state.userinfo
+        }
+
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        userInfoActions: bindActionCreators(userInfoActionsFromOtherFile, dispatch)
+    }
+}
+
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(City)
+
+
+
