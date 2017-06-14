@@ -10,7 +10,6 @@ class DetailInfo extends React.Component {
     }
     render() {
     	let data = this.props.data;
-    	console.log(data);
         return (
             <div id="detail-info-container">
                 <div className="info-container clear-fix">

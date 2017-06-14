@@ -92,6 +92,28 @@ router.get('/api/detail/comment/:page/:id', function *(next) {
     this.body = detailComment
 })
 
+const orderList = require('./orderlist/orderList.js')
+router.get('/api/orderlist/:username', function *(next) {
+    console.log('Order List')
+
+    const params = this.params
+    const username = params.username
+    console.log('UserName：' + username)
+
+    this.body = orderList
+})
+
+router.post('/api/submitComment', function *(next) {
+    console.log('Submit comment')
+
+    // get the params
+
+    this.body = {
+        errno: 0,
+        msg: 'ok'
+    }
+})
+
 
 
 app.use(router.routes())
