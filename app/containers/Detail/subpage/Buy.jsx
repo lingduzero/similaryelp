@@ -2,7 +2,6 @@ import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { hashHistory } from 'react-router'
 import * as storeActionsFromFile from '../../../actions/storeinfo.js'
 import BuyAndStore from '../../../components/BuyAndStore'
 
@@ -50,7 +49,7 @@ class Buy extends React.Component {
         //buy
 
         //jump to the user page
-        hashHistory.push('/User');
+        this.props.hashHistory.push('/User');
     }
 
     storeHandle(){
@@ -87,7 +86,7 @@ class Buy extends React.Component {
       if(!userinfo.username){
         //jump the login page
         // console.log('jump');
-        hashHistory.push('/Login/' + encodeURIComponent('/detail/' + id))
+        this.props.hashHistory.push('/Login/' + encodeURIComponent('/detail/' + id))
         return false;
       }
 

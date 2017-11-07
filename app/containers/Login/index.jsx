@@ -1,8 +1,8 @@
 import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { hashHistory } from 'react-router'
 import * as userInfoActionsFromOtherFile from '../../actions/userinfo.js'
 import Header from '../../components/Header'
 import LoginComponent from '../../components/Login'
@@ -40,10 +40,10 @@ class Login extends React.Component {
     	actions.update(userinfo);
 
     	//jump the link
-    	const params = this.props.params;
+    	const params = this.props.match.params;
     	const router = params.router;
     	if(router){
-    		hashHistory.push(router);
+    		this.props.hashHistory.push(router);
     	}else{
     		this.goUserPage();
     	}
@@ -62,7 +62,7 @@ class Login extends React.Component {
     }
 
     goUserPage(){
-    	hashHistory.push('/User');
+    	this.props.hashHistory.push('/User');
     }
 }
 
@@ -79,7 +79,7 @@ function mapDispatchToProps(dispatch) {
         userInfoActions: bindActionCreators(userInfoActionsFromOtherFile, dispatch)
     }
 }
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Login)
+)(Login))

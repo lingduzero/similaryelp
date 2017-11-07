@@ -2,7 +2,7 @@ import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { hashHistory } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import * as userInfoActionsFromOtherFile from '../../actions/userinfo.js'
 import Header from '../../components/Header'
 import CurrentCity from '../../components/CurrentCity'
@@ -38,8 +38,8 @@ class City extends React.Component {
 
         //change localstorage
          LocalStorage.setItem(CITYNAME, newCity);
-         console.log(hashHistory);
-         hashHistory.push('/');
+         //console.log(hashHistory);
+         this.props.hashHistory.replace('/');
 
     }
 }
@@ -58,10 +58,10 @@ function mapDispatchToProps(dispatch){
 }
 
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(City)
+)(City))
 
 
 

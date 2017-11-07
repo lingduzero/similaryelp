@@ -1,63 +1,96 @@
-const webpack = require('webpack')
-const path = require('path')
-const OpenBrowserWebpackPlugin = require('open-browser-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-console.log(process.env.NODE_ENV)
+var path = require('path')
+var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+
+// var nodeModulesPath = path.resolve(__dirname, 'node_modules')
+// console.log(process.env.NODE_ENV)
+
 module.exports = {
-    context: __dirname + '/src',
-    entry: "./js/index.jsx",
-    resolve: {
-        extensions: ['.js', '.jsx']
+    entry: path.resolve(__dirname, 'app/index.jsx'),
+    output: {
+        path: __dirname + "/build",
+        filename: "bundle.js"
     },
-    devServer: {
-        inline: true,
-        historyApiFallback: true,
-        proxy: {
-            '/api/*': {
-                target: "http://127.0.0.1:8888",
-                secure: false
-            }
-        }
+
+    resolve:{
+        extensions:['.js','.jsx']
     },
-    plugins: [
-        new OpenBrowserWebpackPlugin({
-            url: 'http://localhost:8080/'
-        }),
-        new HtmlWebpackPlugin({
-            template: 'index.html'
-        }),
 
-        new webpack.DefinePlugin({
-            __DEV__: true
-
-        }),
-    ],
     module: {
-        loaders: [{
-                test: /\.(js|jsx)?$/,
-                exclude: /(node_modules)/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['react', 'es2015']
-                }
-            },
+        // preLoaders: [
+        //     // 报错 ？？？？？
+        //     {test: /\.(js|jsx)$/, loader: "eslint-loader", exclude: /node_modules/}
+        // ],
+        rules: [
             {
-                test: /\.css$/,
-                exclude: /(node_modules)/,
-                loader: 'style-loader!css-loader'
-            }, {
-                test: /\.less$/,
-                exclude: /(node_modules)/,
-                loader: 'style-loader!css-loader!less-loader'
-            }, {
-                test: /\.(png|gif|svg|ttf|eot|woff|woff2|jpg|jpeg|bmp)($|\?)/i,
-                exclude: /(node_modules)/,
-                loader: 'url-loader?limit=10000'
-            }
+              test:/\.(js|jsx)?$/,
+              exclude:/(node_modules|bower_components)/,
+              loader:'babel-loader',
+              query:{
+                "presets":['react','es2015']
+              }
+            },
+            { 
+              test: /\.(css|less)?$/, 
+              exclude:/(node_modules|bower_components)/,
+              use:[
+                'style-loader',
+                {
+                    loader:'css-loader',
+                    options: {
+                        importLoaders:1
+                    }
+                },
+                'postcss-loader',
+                'less-loader'
+              ]
+            },
+            { 
+              test:/\.(png|gif|jpg|jpeg|bmp)$/, 
+              exclude:/(node_modules|bower_components)/,
+              loader:'file-loader' 
+            },
+            { 
+              test:/\.(woff|woff2|svg|ttf|eot)($|\?)/, 
+              exclude:/(node_modules|bower_components)/,
+              loader:'file-loader' 
+            }  
         ]
     },
-    output: {
-        path: __dirname + '/dist/',
-        filename: './js/bundle.js'
+    plugins: [
+        // html 模板插件
+        new HtmlWebpackPlugin({
+            template: __dirname + '/app/index.tmpl.html'
+        }),
+
+        // 热加载插件
+        new webpack.HotModuleReplacementPlugin(),
+
+        // 打开浏览器
+        new OpenBrowserPlugin({
+          url: 'http://localhost:8080'
+        }),
+
+        // 可在业务 js 代码中使用 __DEV__ 判断是否是dev模式（dev模式下可以提示错误、测试报告等, production模式不提示）
+        new webpack.DefinePlugin({
+          __DEV__: JSON.stringify(JSON.parse((process.env.NODE_ENV == 'dev') || 'false'))
+        })
+    ],
+
+    devServer: {
+        proxy: {
+          // 凡是 `/api` 开头的 http 请求，都会被代理到 localhost:3000 上，由 koa 提供 mock 数据。
+          // koa 代码在 ./mock 目录中，启动命令为 npm run mock
+          '/api': {
+            target: 'http://localhost:3000',
+            secure: false
+          }
+        },
+        contentBase: "./public", //本地服务器所加载的页面所在的目录
+        historyApiFallback: true, //不跳转
+        inline: true, //实时刷新
+        hot: true  // 使用热加载插件 HotModuleReplacementPlugin
     }
 }

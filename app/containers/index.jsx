@@ -4,6 +4,7 @@ import LocalStorage from '../util/LocalStore.js'
 import {CITYNAME} from '../config/localStoreKey.js'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import * as userInfoActionsFromOtherFile from '../actions/userinfo.js'
 
 
@@ -57,7 +58,7 @@ function mapDispatchToProps(dispatch){
 }
 
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(App)
+)(App))
