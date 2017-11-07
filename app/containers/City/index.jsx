@@ -19,7 +19,7 @@ class City extends React.Component {
     render() {
         return (
             <div>
-              <Header title = "select the city"/>
+              <Header title = "select the city" history={this.props.history}/>
               <CurrentCity cityName = {this.props.userinfo.cityName} />
               <CityList changeFn = {this.changeCity.bind(this)}/>
             </div>

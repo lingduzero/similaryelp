@@ -18,7 +18,7 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-            	<Header title = "Login" />
+            	<Header title = "Login" history={this.props.history}/>
             	{
             		this.state.checking
             		? <div>{/*Loading...*/}</div>
